@@ -1,7 +1,7 @@
 pool:
   vmImage: ubuntu-latest
 stages:
-- stage: SAST
+- stage: SAST MABEL
   jobs:
   - job:
     steps:
@@ -16,3 +16,4 @@ stages:
         effectivePomSkip: false
         sonarQubeRunAnalysis: false
 
+    
