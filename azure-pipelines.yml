@@ -11,6 +11,7 @@ stages:
         mavenPomFile: 'pom.xml'
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        codeCoverageToolOption: 'JaCoCo'
         javaHomeOption: 'JDKVersion'
         mavenVersionOption: 'Default'
         mavenAuthenticateFeed: false
@@ -23,5 +24,23 @@ stages:
         scannerMode: 'MSBuild'
         projectKey: 'finalmabel_spring-boot-kubernetes'
         projectName: 'spring-boot-kubernetes'
-
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: true
+        sqMavenPluginVersionChoice: 'latest'
     
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
+
+    - task: sonarcloud-buildbreaker@2
+      inputs:
+        SonarCloud: 'sonar_final'
+        organization: 'finalmabel'
