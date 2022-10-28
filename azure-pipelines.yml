@@ -21,7 +21,6 @@ stages:
       inputs:
         SonarCloud: 'sonar_final'
         organization: 'finalmabel'
-        scannerMode: 'MSBuild'
         projectKey: 'finalmabel_spring-boot-kubernetes'
         projectName: 'spring-boot-kubernetes'
     - task: Maven@4
