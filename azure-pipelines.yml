@@ -1,7 +1,7 @@
 pool:
   vmImage: ubuntu-latest
 stages:
-- stage: SAST MABEL
+- stage: SASTMABEL
   jobs:
   - job:
     steps:
