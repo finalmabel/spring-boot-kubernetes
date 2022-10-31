@@ -39,7 +39,7 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
-    - task: sonarcloud-buildbreaker@2
-      inputs:
-        SonarCloud: 'sonar_final'
-        organization: 'finalmabel'
+#    - task: sonarcloud-buildbreaker@2
+#      inputs:
+#        SonarCloud: 'sonar_final'
+#        organization: 'finalmabel'
