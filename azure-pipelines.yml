@@ -43,3 +43,37 @@ stages:
 #      inputs:
 #        SonarCloud: 'sonar_final'
 #        organization: 'finalmabel'
+
+- stage: SCAMABEL
+  jobs:
+  - job:
+    displayName: 'SCA'
+    steps:
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        testRunTitle: 'maven SCA'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    - script: find $(Build.SourceDirectory) -name "*.jar"
+
+    - task: dependency-check-build-task@6
+      inputs:
+        projectName: 'spring-boot-kubernetes'
+        scanPath: '$(Build.SourcesDirectory)/target'
+        format: 'HTML'
+        reportsDirectory: '$(Build.SourcesDirectory)/dependency'
+        reportFilename: 'Dependency Check Report'
+    - script: |
+        contador_v=$(grep ",HIGH," $(Build.SourcesDirectory)/dependency/dependency-check-report.csv | wc -l)
+        echo $contador_v "HIGH Vulnerabilities detected with dependency-check"
+        if [ $contador_v -gt 0 ];
+        then 
+          echo "dependecy check ha encontrado vulnerabilidades" $contador_v " > 0 HIGH Vulnerabilities"
+          exit 1;
+        fi;
