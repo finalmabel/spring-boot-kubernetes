@@ -70,9 +70,9 @@ stages:
         reportsDirectory: '$(Build.SourcesDirectory)/reportes_dep'
     - script: |
         contador_v=$(grep " HIGH " $(Build.SourcesDirectory)/reportes_dep/dependency-check-report.html | wc -l)
-        echo $contador_v "HIGH Vulnerabilities detected with dependency-check"
+        echo $contador_v "Vulnerabilidades encontradas"
         if [ $contador_v -gt 0 ];
         then 
-          echo "dependecy check ha encontrado vulnerabilidades" $contador_v " > 0 HIGH Vulnerabilities"
+          echo "dependecy check ha encontrado" $contador_v "vulnerabilidades, si encontraba un valor >0 debía quebrar la ejecución"
           exit 1;
         fi;
