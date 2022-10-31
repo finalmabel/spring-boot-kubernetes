@@ -67,10 +67,9 @@ stages:
         projectName: 'spring-boot-kubernetes'
         scanPath: '$(Build.SourcesDirectory)/target'
         format: 'HTML'
-        reportsDirectory: '$(Build.SourcesDirectory)/dependency'
-        reportFilename: 'Dependency Check Report'
+        reportsDirectory: '$(Build.SourcesDirectory)/reportes_dep'
     - script: |
-        contador_v=$(grep ",HIGH," $(Build.SourcesDirectory)/dependency/dependency-check-report.csv | wc -l)
+        contador_v=$(grep ",HIGH," $(Build.SourcesDirectory)/reportes_dep/dependency-check-report.csv | wc -l)
         echo $contador_v "HIGH Vulnerabilities detected with dependency-check"
         if [ $contador_v -gt 0 ];
         then 
