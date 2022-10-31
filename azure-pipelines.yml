@@ -28,6 +28,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'tarea_final_container'
+        repository: 'mabelmellado1974/tarea_final_container'
         command: 'build'
         Dockerfile: '**/Dockerfile'
         tags: 'latest'
@@ -35,7 +36,7 @@ stages:
         sudo apt-get install -y rpm
         wget https://github.com/aquasecurity/trivy/releases/download/v0.27.1/trivy_0.27.1_Linux-64bit.deb
         sudo dpkg -i trivy_0.27.1_Linux-64bit.deb
-        trivy image -x "HIGH,CRITICAL" --exit-code 1 mabelmellado1974/tarea_final_container:latest
+        trivy image -s "HIGH,CRITICAL" --exit-code 1 mabelmellado1974/tarea_final_container:latest
       displayName: Image Scan
     
     - task: Docker@2
