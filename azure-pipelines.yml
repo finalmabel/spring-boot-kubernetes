@@ -1,7 +1,81 @@
 pool:
   vmImage: ubuntu-latest
 stages:
+- stage: SASTMABEL
+  jobs:
+  - job:
+    displayName: 'SAST'
+    steps:
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        codeCoverageToolOption: 'JaCoCo'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    - task: SonarCloudPrepare@1
+      inputs:
+        SonarCloud: 'sonar_final'
+        organization: 'finalmabel'
+        projectKey: 'finalmabel_spring-boot-kubernetes'
+        projectName: 'spring-boot-kubernetes'
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: true
+        sqMavenPluginVersionChoice: 'latest'
+    
+    - task: SonarCloudPublish@1
+      inputs:
+        pollingTimeoutSec: '300'
 
+#    - task: sonarcloud-buildbreaker@2
+#      inputs:
+#        SonarCloud: 'sonar_final'
+#        organization: 'finalmabel'
+
+- stage: SCAMABEL
+  jobs:
+  - job:
+    displayName: 'SCA'
+    steps:
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        testRunTitle: 'maven SCA'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    - script: find $(Build.SourceDirectory) -name "*.jar"
+
+    - task: dependency-check-build-task@6
+      inputs:
+        projectName: 'spring-boot-kubernetes'
+        scanPath: '$(Build.SourcesDirectory)/target'
+        format: 'HTML'
+        reportsDirectory: '$(Build.SourcesDirectory)/reportes_dep'
+    - script: |
+        contador_v=$(grep " HIGH " $(Build.SourcesDirectory)/reportes_dep/dependency-check-report.html | wc -l)
+        echo $contador_v "Vulnerabilidades encontradas"
+    #    if [ $contador_v -gt 0 ];
+    #    then 
+    #      echo "dependecy check ha encontrado" $contador_v "vulnerabilidades, si encontraba un valor >0 debía quebrar la ejecución"
+    #      exit 1;
+    #    fi;
 - stage: ContainerSecurityMABEL
   jobs:
   - job:
